@@ -6,8 +6,12 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.badbadcode.application.models.entity.Producto;
@@ -40,5 +44,22 @@ public class ProductoController {
 		producto.setPort(port);
 		return producto;
 	}
-
+	@PostMapping("/crear")
+	public Producto crear(@RequestBody Producto producto) {
+		return productoService.save(producto);
+	}
+	@PutMapping("/editar/{id}")
+	public Producto editar(@RequestBody Producto producto, @PathVariable Long id) {
+		Producto newProducto = productoService.findById(id);
+		
+		newProducto.setNombre(producto.getNombre());
+		newProducto.setPrecio(producto.getPrecio());
+		
+		return productoService.save(newProducto);
+	}
+	@DeleteMapping("/eliminar/{id}")
+	public void eliminar(@PathVariable Long id) {
+		productoService.deleteById(id);
+	}
+	
 }
